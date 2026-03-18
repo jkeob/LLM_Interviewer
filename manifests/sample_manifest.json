@@ -1,0 +1,211 @@
+{
+  "agenthub_id": "agenthub://general/general-assistant-agent",
+  "version": "1.0.0",
+  "display_name": "General Assistant Agent",
+
+  "description": "A general-purpose large parameter language agent capable of handling a wide range of natural language tasks including reasoning, summarization, question answering, code generation, analysis, and planning. Built on a large parameter transformer model, this agent is designed to serve as a flexible baseline for tasks that do not require domain-specific specialization. It accepts free-form text input and returns structured or unstructured text responses depending on the task.",
+
+  "authors": [
+    {
+      "namespace": "agenthub://agenthub-team",
+      "username": "agenthub-team"
+    }
+  ],
+
+  "tags": [
+    "general-purpose",
+    "large-language-model",
+    "reasoning",
+    "question-answering",
+    "summarization",
+    "code-generation",
+    "planning",
+    "analysis",
+    "text-generation"
+  ],
+
+  "use_cases": [
+    "Answering open-ended questions that require multi-step reasoning",
+    "Summarizing long documents or research papers into concise outputs",
+    "Generating boilerplate code or explaining existing code snippets",
+    "Breaking down a complex task into a step-by-step plan",
+    "Drafting emails, reports, or structured documents from a prompt",
+    "Performing basic data analysis and interpretation from text-based inputs"
+  ],
+
+  "limitations": [
+    "No persistent memory across sessions — each request is stateless",
+    "Cannot access the internet or retrieve real-time information",
+    "May hallucinate facts, especially for highly specific or niche domains",
+    "Not optimized for highly specialized tasks such as medical diagnosis or legal analysis",
+    "Performance degrades on inputs exceeding context window limits",
+    "Cannot process images, audio, or video — text only",
+    "Non-deterministic outputs may vary across identical inputs"
+  ],
+
+  "capabilities": [
+    {
+      "id": "reasoning",
+      "description": "Performs multi-step logical reasoning over a given problem or question, breaking it down into intermediate steps before arriving at a conclusion.",
+      "input_example": "If all A are B, and all B are C, are all A also C? Explain your reasoning.",
+      "output_example": "Yes. Since all A are B, and all B are C, by transitivity all A must also be C. Step 1: A ⊆ B. Step 2: B ⊆ C. Conclusion: A ⊆ C.",
+      "constraints": "Works best on well-defined logical problems. May struggle with ambiguous or underspecified premises."
+    },
+    {
+      "id": "summarization",
+      "description": "Condenses long-form text input into a shorter, coherent summary that preserves the key points, decisions, and conclusions.",
+      "input_example": "A 5,000 word research paper on transformer architecture improvements.",
+      "output_example": "A 200-300 word summary covering the paper's main contribution, methodology, key results, and limitations.",
+      "constraints": "Input text must be under the model's context window (~128k tokens). Quality degrades on highly technical or domain-specific content."
+    },
+    {
+      "id": "code_generation",
+      "description": "Generates functional code snippets or full scripts based on a natural language description of the desired behavior.",
+      "input_example": "Write a Python function that takes a list of integers and returns the top 3 most frequent values.",
+      "output_example": "A working Python function using collections.Counter with inline comments explaining each step.",
+      "constraints": "Does not execute or verify code at runtime. Generated code should be reviewed before use in production."
+    },
+    {
+      "id": "planning",
+      "description": "Decomposes a high-level goal into an ordered list of actionable steps with optional time estimates and dependencies.",
+      "input_example": "I want to launch a personal portfolio website in 2 weeks. What should I do?",
+      "output_example": "A numbered step-by-step plan covering design, development, content, deployment, and launch with rough time allocations per step.",
+      "constraints": "Plans are based on general knowledge and may not account for user-specific constraints unless explicitly provided."
+    },
+    {
+      "id": "question_answering",
+      "description": "Answers factual, conceptual, or open-ended questions based on the information provided in the prompt or the model's training knowledge.",
+      "input_example": "What is the difference between supervised and unsupervised learning?",
+      "output_example": "A clear explanation distinguishing the two paradigms with examples of each.",
+      "constraints": "Knowledge cutoff applies. Will not answer questions requiring real-time or post-training data without retrieval augmentation."
+    }
+  ],
+
+  "modalities": ["text", "code"],
+
+  "protocol_bindings": [
+    {
+      "protocol": "http",
+      "endpoint": "https://agents.agenthub.dev/general-assistant/invoke",
+      "descriptor_ref": "https://agents.agenthub.dev/general-assistant/descriptor.json"
+    },
+    {
+      "protocol": "a2a",
+      "endpoint": "https://agents.agenthub.dev/general-assistant/a2a",
+      "descriptor_ref": "https://agents.agenthub.dev/general-assistant/agentcard.json"
+    }
+  ],
+
+  "permissions": {
+    "network": {
+      "inbound": true,
+      "outbound": false,
+      "allowed_hosts": [],
+      "notes": "No outbound network access required. Model weights are loaded locally at startup."
+    },
+    "filesystem": {
+      "read": [".", "~/.cache/huggingface"],
+      "write": ["~/.cache/huggingface"]
+    },
+    "data": {
+      "stores_user_data": false,
+      "retention": "none"
+    }
+  },
+
+  "dependencies": [
+    {
+      "type": "model",
+      "ref": "hf://meta-llama/Llama-3.1-70B-Instruct"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://fastapi"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://uvicorn"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://torch"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://transformers"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://accelerate"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://pydantic"
+    }
+  ],
+
+  "lifecycle": {
+    "state": "active",
+    "created_at": "2026-01-01T00:00:00Z",
+    "updated_at": "2026-02-25T00:00:00Z",
+    "deprecation_reason": null
+  },
+
+  "evidence": {
+    "logging": {
+      "enabled": true,
+      "notes": "Request and response traces logged with unique request IDs. No user data retained."
+    },
+    "tests": [
+      {
+        "name": "smoke_test_reasoning",
+        "description": "POST /invoke with a simple logical reasoning prompt and verify a structured response is returned."
+      },
+      {
+        "name": "smoke_test_code_generation",
+        "description": "POST /invoke with a basic Python code generation request and verify syntactically valid code is returned."
+      },
+      {
+        "name": "smoke_test_summarization",
+        "description": "POST /invoke with a 1000 word input and verify a condensed summary under 200 words is returned."
+      }
+    ],
+    "benchmarks": [
+      {
+        "name": "MMLU",
+        "result": "82.4%",
+        "remarks": "Evaluated on 5-shot MMLU across 57 subjects."
+      },
+      {
+        "name": "HumanEval",
+        "result": "72.6%",
+        "remarks": "Pass@1 on HumanEval Python code generation benchmark."
+      }
+    ]
+  },
+
+  "extensions": {
+    "http_api": {
+      "health_path": "/health",
+      "invoke_path": "/invoke",
+      "content_type": "application/json"
+    },
+    "runtime": {
+      "framework": "fastapi",
+      "default_port": 8080,
+      "env_vars": [
+        "MODEL_ID",
+        "PORT",
+        "HOST",
+        "DTYPE",
+        "DEVICE_MAP"
+      ]
+    },
+    "cli": {
+      "entrypoint": "python3 host.py",
+      "env": {
+        "SERVER": "http://127.0.0.1:8080"
+      }
+    }
+  }
+}

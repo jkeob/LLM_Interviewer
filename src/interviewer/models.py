@@ -3,17 +3,23 @@ from typing import List
 
 
 class InterviewQuestions(BaseModel):
-    task_understanding_question: str
+    reasoning_understanding_question: str
     relevant_capabilities_question: str
-    approach_question: str
-    micro_demo_question: str
     limitations_question: str
+    demo_task_question_1: str
+    demo_task_question_2: str
+    demo_task_question_3: str
+
+
+class TaskRubric(BaseModel):
+    task_id: str
+    success_criteria: str
 
 
 class ReferenceBlock(BaseModel):
     user_query: str
     intent_summary: str
-    success_criteria: List[str] = Field(default_factory=list)
+    task_rubrics: List[TaskRubric]
     ideal_answer_rubric: str
 
 

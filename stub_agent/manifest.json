@@ -1,0 +1,174 @@
+{
+  "agenthub_id": "agenthub://general/stub-general-agent",
+  "version": "0.1.0",
+  "display_name": "Stub General Agent",
+
+  "description": "A general purpose language agent capable of handling a wide range of natural language tasks including reasoning, summarization, question answering, code generation, debugging, email writing, and planning. Built on a large parameter transformer model, this agent is designed to serve as a flexible baseline for tasks that do not require domain-specific specialization.",
+
+  "authors": [
+    {
+      "namespace": "agenthub://agenthub-team",
+      "username": "agenthub-team",
+      "name": "AgentHub Team"
+    }
+  ],
+
+  "tags": [
+    "general-purpose",
+    "reasoning",
+    "code-generation",
+    "debugging",
+    "email-writing",
+    "planning",
+    "summarization"
+  ],
+
+  "use_cases": [
+    "Debugging and fixing code errors",
+    "Generating professional emails",
+    "Breaking down complex tasks into step-by-step plans",
+    "Answering open-ended questions",
+    "Summarizing documents or transcripts"
+  ],
+
+  "limitations": [
+    "Cannot execute code at runtime",
+    "No internet access or real-time data",
+    "May hallucinate facts in niche domains",
+    "No persistent memory across sessions",
+    "Text only — no image, audio, or video input"
+  ],
+
+  "capabilities": [
+    {
+      "id": "code_generation",
+      "description": "Generates and debugs code based on natural language descriptions.",
+      "input_example": "Here is a Python function that is supposed to return the sum of a list but it returns None. Fix it.",
+      "output_example": "A corrected Python function with an explanation of the bug and what was changed.",
+      "constraints": "Cannot execute or verify code at runtime. Generated code should be reviewed before use."
+    },
+    {
+      "id": "email_writing",
+      "description": "Drafts professional emails based on context, tone, and recipient details.",
+      "input_example": "Write a professional email to a client informing them of a project delay.",
+      "output_example": "A complete, grammatically correct email with subject line, body, and closing.",
+      "constraints": "No access to user contacts or email history. Tone and content based on prompt only."
+    },
+    {
+      "id": "reasoning",
+      "description": "Performs multi-step logical reasoning over a given problem or question.",
+      "input_example": "If all A are B and all B are C, are all A also C? Explain.",
+      "output_example": "A step-by-step logical breakdown arriving at the correct conclusion.",
+      "constraints": "Works best on well-defined problems. May struggle with ambiguous premises."
+    },
+    {
+      "id": "planning",
+      "description": "Breaks down high-level goals into ordered, actionable step-by-step plans.",
+      "input_example": "I want to launch a personal portfolio website in 2 weeks. What should I do?",
+      "output_example": "A numbered plan covering design, development, deployment, and launch with time estimates.",
+      "constraints": "Plans are based on general knowledge and may not account for user-specific constraints."
+    },
+    {
+      "id": "summarization",
+      "description": "Condenses long-form text into concise summaries preserving key points.",
+      "input_example": "Summarize this 2000 word research paper.",
+      "output_example": "A 150-200 word summary covering the main contribution, methodology, and conclusions.",
+      "constraints": "Input must fit within context window. Quality may degrade on highly technical content."
+    }
+  ],
+
+  "modalities": ["text", "code"],
+
+  "protocol_bindings": [
+    {
+      "protocol": "http",
+      "endpoint": "http://localhost:8090/invoke"
+    }
+  ],
+
+  "permissions": {
+    "network": {
+      "inbound": true,
+      "outbound": true,
+      "allowed_hosts": ["localhost"],
+      "notes": "Outbound only to local vllm instance on port 8000."
+    },
+    "filesystem": {
+      "read": false,
+      "write": false
+    },
+    "data": {
+      "stores_user_data": false,
+      "retention": "none"
+    }
+  },
+
+  "dependencies": [
+    {
+      "type": "model",
+      "ref": "hf://Qwen/Qwen3-30B-A3B-Instruct-2507"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://fastapi"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://uvicorn"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://requests"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://pydantic"
+    }
+  ],
+
+  "lifecycle": {
+    "state": "active",
+    "created_at": "2026-03-25T00:00:00Z",
+    "updated_at": "2026-03-25T00:00:00Z",
+    "deprecation_reason": null
+  },
+
+  "evidence": {
+    "logging": {
+      "enabled": true,
+      "notes": "Request and response logged per invocation. No user data retained."
+    },
+    "tests": [
+      {
+        "name": "smoke_test_code_generation",
+        "description": "POST /invoke with a buggy Python function and verify a corrected version is returned."
+      },
+      {
+        "name": "smoke_test_email_writing",
+        "description": "POST /invoke with an email drafting request and verify a complete email is returned."
+      },
+      {
+        "name": "smoke_test_planning",
+        "description": "POST /invoke with a planning request and verify a numbered step-by-step plan is returned."
+      }
+    ]
+  },
+
+  "extensions": {
+    "http_api": {
+      "health_path": "/health",
+      "invoke_path": "/invoke",
+      "content_type": "application/json"
+    },
+    "runtime": {
+      "default_port": 8090,
+      "env_vars": ["VLLM_URL", "MODEL", "PORT", "HOST"]
+    },
+    "cli": {
+      "entrypoint": "python3 server.py",
+      "env": {
+        "PORT": "8090"
+      }
+    }
+  }
+}

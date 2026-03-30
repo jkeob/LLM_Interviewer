@@ -21,15 +21,13 @@ from src.judge.client import JudgeClient
 
 def main():
     # load manifest
-    manifest = json.loads(Path("stub_agent/manifest.json").read_text())
+    manifest = json.loads(Path("quality_agent/manifest.json").read_text())
 
     user_query = (
-        "I need an agent that can handle a wide range of tasks from code generation to email generation. "
-        "For example, I want to be able to have the agent find issues in my code, find the bug, and fix "
-        "the code so it runs properly without errors. I also want it to be able to craft emails to any "
-        "one of my contacts."
+        "I need an agent that can handle coding tasks and real-time web research. "
+        "For example, I want it to write and execute Python code to verify correctness, "
+        "and search the internet for current information to answer up-to-date questions."
     )
-
     start()
 
     try:

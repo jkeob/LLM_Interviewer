@@ -1,0 +1,164 @@
+{
+  "agenthub_id": "agenthub://general/quality-agent",
+  "version": "0.1.0",
+  "display_name": "Quality Agent",
+
+  "description": "A general-purpose agent capable of handling coding tasks and real-time web research. Unlike static LLM agents, this agent can search the internet for current information and execute Python code to verify correctness before returning results.",
+
+  "authors": [
+    {
+      "namespace": "agenthub://ssl",
+      "username": "joh9",
+      "name": "Jacob"
+    }
+  ],
+
+  "tags": [
+    "general-purpose",
+    "code-generation",
+    "code-execution",
+    "web-search",
+    "reasoning",
+    "agentic"
+  ],
+
+  "use_cases": [
+    "Writing and verifying Python code",
+    "Searching the web for current information",
+    "Answering questions that require up-to-date knowledge",
+    "Debugging and testing code",
+    "Research and summarization tasks"
+  ],
+
+  "limitations": [
+    "Web search limited to 5 results per query by default",
+    "Code execution timeout of 15 seconds",
+    "No persistent memory across sessions",
+    "Text only — no image, audio, or video input",
+    "Code execution runs in a subprocess sandbox on the host machine"
+  ],
+
+  "capabilities": [
+    {
+      "id": "code_generation",
+      "description": "Writes, executes, and verifies Python code based on natural language descriptions.",
+      "input_example": "Write a Python function that sorts a list of dictionaries by a given key.",
+      "output_example": "A working, tested Python function with execution output confirming correctness.",
+      "constraints": "Code execution is sandboxed with a 15 second timeout. Only Python is supported."
+    },
+    {
+      "id": "web_search",
+      "description": "Searches the internet for current information and synthesizes results.",
+      "input_example": "What are the latest developments in AI agent frameworks in 2026?",
+      "output_example": "A synthesized summary of recent developments based on live web search results.",
+      "constraints": "Search depth is basic. Results limited to 5 per query."
+    },
+    {
+      "id": "reasoning",
+      "description": "Performs multi-step reasoning combining web search and code execution as needed.",
+      "input_example": "Find the current price of NVIDIA stock and calculate what a $1000 investment would be worth today if bought at $100.",
+      "output_example": "A step-by-step solution using search for current price and code for calculation.",
+      "constraints": "Accuracy depends on search result quality and recency."
+    }
+  ],
+
+  "modalities": ["text", "code"],
+
+  "protocol_bindings": [
+    {
+      "protocol": "http",
+      "endpoint": "http://localhost:8080/invoke"
+    }
+  ],
+
+  "permissions": {
+    "network": {
+      "inbound": true,
+      "outbound": true,
+      "allowed_hosts": ["localhost", "api.tavily.com"],
+      "notes": "Outbound to local vLLM instance on port 8050 and Tavily search API."
+    },
+    "filesystem": {
+      "read": false,
+      "write": true,
+      "notes": "Writes temporary Python files to /tmp for code execution, deleted after run."
+    },
+    "data": {
+      "stores_user_data": false,
+      "retention": "none"
+    }
+  },
+
+  "dependencies": [
+    {
+      "type": "model",
+      "ref": "hf://Qwen/Qwen3-30B-A3B-Instruct-2507"
+    },
+    {
+      "type": "service",
+      "ref": "api://tavily.com"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://fastapi"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://uvicorn"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://httpx"
+    },
+    {
+      "type": "library",
+      "ref": "pypi://openai"
+    }
+  ],
+
+  "lifecycle": {
+    "state": "active",
+    "created_at": "2026-03-29T00:00:00Z",
+    "updated_at": "2026-03-29T00:00:00Z",
+    "deprecation_reason": null
+  },
+
+  "evidence": {
+    "logging": {
+      "enabled": true,
+      "notes": "Tool calls logged per invocation via stdout. No user data retained."
+    },
+    "tests": [
+      {
+        "name": "smoke_test_code_generation",
+        "description": "POST /invoke with a coding task and verify working code with execution output is returned."
+      },
+      {
+        "name": "smoke_test_web_search",
+        "description": "POST /invoke with a current events question and verify a synthesized search-based answer is returned."
+      },
+      {
+        "name": "smoke_test_combined",
+        "description": "POST /invoke with a task requiring both search and code execution and verify both tools are used."
+      }
+    ]
+  },
+
+  "extensions": {
+    "http_api": {
+      "health_path": "/health",
+      "invoke_path": "/invoke",
+      "content_type": "application/json"
+    },
+    "runtime": {
+      "default_port": 8080,
+      "env_vars": ["TAVILY_API_KEY"]
+    },
+    "cli": {
+      "entrypoint": "uvicorn quality_agent.main:app --port 8080",
+      "env": {
+        "PORT": "8080"
+      }
+    }
+  }
+}

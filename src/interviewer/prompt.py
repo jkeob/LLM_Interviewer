@@ -24,6 +24,7 @@ Rules:
 - do not include markdown
 - do not include explanation outside the JSON
 - do not rename fields
+- when asking code generation quesitons require the agent to include their code with their response
 - do not skip task creation
 
 

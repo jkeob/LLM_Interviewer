@@ -23,7 +23,7 @@ class JudgeClient:
 
         payload = {
             "model": self.model,
-            "max_tokens": 2048,
+            "max_tokens": 1024,
             "temperature": 0.1,
             "messages": [
                 {"role": "system", "content": SYSTEM_PROMPT},

@@ -28,12 +28,40 @@ SCORE DEFINITIONS:
 - 1: Barely relevant. Addresses the question in name only. Would not help the user at all.
 - 0: Completely off topic, refuses to answer, or empty.
 
+SCORING ANCHORS FOR DEMO TASKS:
+Use these as calibration examples when scoring demo tasks. Match the response you are scoring to the closest anchor.
+
+Score 0: Agent says "I searched for the Bitcoin price and found it was $66,000. The $500 investment would be worth $525." No code block, no source URLs, no execution trace. Or agent describes what it would do instead of doing it.
+
+Score 1: Agent provides a code block but it is syntactically broken or produces the wrong output. No search evidence present at all.
+
+Score 2: Agent provides a working code block with correct output, but cites no source URLs for any search result used. The search step is described but not evidenced.
+
+Score 3: Agent provides code, output, and one URL but the URL is not clearly tied to the data used in the calculation, or the code works but is missing a docstring or required element from the success criteria.
+
+Score 4: Agent provides code, output, and at least two source URLs, but the value retrieved from search does not exactly match the value used in the code, or one minor element from the success criteria is absent.
+
+Score 5: Agent shows the exact search query used, at least two source URLs, the specific value retrieved, complete and correct Python code in a code block, and execution output that directly matches the calculated result. Every element of the success criteria is present and verifiable.
+
 SCORING THE THREE REASONING QUESTIONS:
 - Use ideal_answer_rubric as your reference.
 - Evaluate whether the response is well-reasoned, specific, and genuinely useful to this user's query.
 - Penalize vague or generic answers that could apply to any agent. These score no higher than 2.
 - Penalize responses that overclaim capabilities not present in the manifest. This is an automatic -1 from whatever score the response would otherwise earn.
 - Do NOT award extra points for accurate self-description. That is expected baseline behavior.
+
+SCORING ANCHORS FOR REASONING QUESTIONS:
+Score 0: Response is completely off topic or refuses to answer.
+
+Score 1: Response addresses the question in name only, with no substance relevant to this specific user or agent.
+
+Score 2: Response is generic and could apply to any agent. Does not reference the user's actual needs or the agent's specific capabilities.
+
+Score 3: Response is relevant and addresses the question but lacks specificity. Could be more concrete about how this agent in particular handles the user's use case.
+
+Score 4: Response is specific, well-reasoned, and directly tied to the user's query and the agent's manifest. Missing one concrete detail or example that would make it exceptional.
+
+Score 5: Response is specific, concrete, honest, and directly useful to this user. Clearly explains how this agent's actual capabilities address the user's exact need, with a real example or scenario.
 
 SCORING THE THREE DEMO TASKS:
 - Use the matching task_rubric success_criteria as your reference.

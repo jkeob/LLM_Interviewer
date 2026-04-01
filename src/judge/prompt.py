@@ -14,21 +14,23 @@ Your task:
 - Provide a short justification for each score
 - Provide an overall verdict summarizing how well this agent fits the user's need
 
-SCORING PHILOSOPHY:
+<scoring_philosophy>
 - Scores are only meaningful in comparison to other agents. Calibrate accordingly. A 5 should be rare and reserved for genuinely excellent responses that would stand out against competing agents.
 - You are evaluating USEFULNESS TO THE USER, not compliance with instructions. Following instructions is the bare minimum expected of any agent.
 - Do NOT reward an agent for not hallucinating or not overclaiming. Accuracy about its own capabilities is a baseline requirement, not a strength. Only penalize when the agent overstates itself.
 - A response that is technically correct but vague, generic, or unhelpful to the specific user should score no higher than 3.
+</scoring_philosophy>
 
-SCORE DEFINITIONS:
+<score_definitions>
 - 5: Exceptional. Every required element is present, correct, and genuinely useful to this specific user. Would clearly outperform most competing agents on this question.
 - 4: Good. Satisfies most criteria but is missing exactly one minor element or has a small inaccuracy that does not significantly affect usefulness.
 - 3: Adequate. Completes the task at a surface level but is missing one major required element, is too generic, or provides limited practical value to the user.
 - 2: Poor. Significant gaps or errors. Attempts the task but fails on key criteria that would matter to the user.
 - 1: Barely relevant. Addresses the question in name only. Would not help the user at all.
 - 0: Completely off topic, refuses to answer, or empty.
+</score_definitions>
 
-SCORING ANCHORS FOR DEMO TASKS:
+<scoring_anchors_demo_tasks>
 Use these as calibration examples when scoring demo tasks. Match the response you are scoring to the closest anchor.
 
 Score 0: Agent says "I searched for the Bitcoin price and found it was $66,000. The $500 investment would be worth $525." No code block, no source URLs, no execution trace. Or agent describes what it would do instead of doing it.
@@ -42,46 +44,49 @@ Score 3: Agent provides code, output, and one URL but the URL is not clearly tie
 Score 4: Agent provides code, output, and at least two source URLs, but the value retrieved from search does not exactly match the value used in the code, or one minor element from the success criteria is absent.
 
 Score 5: Agent shows the exact search query used, at least two source URLs, the specific value retrieved, complete and correct Python code in a code block, and execution output that directly matches the calculated result. Every element of the success criteria is present and verifiable.
+</scoring_anchors_demo_tasks>
 
-SCORING THE THREE REASONING QUESTIONS:
+<scoring_reasoning_questions>
 - Use ideal_answer_rubric as your reference.
 - Evaluate whether the response is well-reasoned, specific, and genuinely useful to this user's query.
 - Penalize vague or generic answers that could apply to any agent. These score no higher than 2.
 - Penalize responses that overclaim capabilities not present in the manifest. This is an automatic -1 from whatever score the response would otherwise earn.
 - Do NOT award extra points for accurate self-description. That is expected baseline behavior.
 
-SCORING ANCHORS FOR REASONING QUESTIONS:
 Score 0: Response is completely off topic or refuses to answer.
-
 Score 1: Response addresses the question in name only, with no substance relevant to this specific user or agent.
-
 Score 2: Response is generic and could apply to any agent. Does not reference the user's actual needs or the agent's specific capabilities.
-
 Score 3: Response is relevant and addresses the question but lacks specificity. Could be more concrete about how this agent in particular handles the user's use case.
-
 Score 4: Response is specific, well-reasoned, and directly tied to the user's query and the agent's manifest. Missing one concrete detail or example that would make it exceptional.
-
 Score 5: Response is specific, concrete, honest, and directly useful to this user. Clearly explains how this agent's actual capabilities address the user's exact need, with a real example or scenario.
+</scoring_reasoning_questions>
 
-SCORING THE THREE DEMO TASKS:
+<scoring_demo_tasks>
 - Use the matching task_rubric success_criteria as your reference.
 - The agent must produce a concrete, complete output, not describe what it would do.
-- AUTOMATIC 0 rules. Any of the following result in an immediate score of 0 regardless of other content:
-  - A code task response that does not include the actual code as a code block (showing only output is not sufficient)
-  - A search task response that does not cite specific source URLs retrieved from actual search results
-  - A combined task response missing either the search evidence or the code
+
+<automatic_zero_rules>
+Any of the following result in an immediate score of 0 regardless of other content:
+- A code task response that does not include the actual code as a code block (showing only output is not sufficient)
+- A search task response that does not cite specific source URLs retrieved from actual search results
+- A combined task response missing either the search evidence or the code
+</automatic_zero_rules>
+
 - Penalize responses that describe their approach instead of executing it.
 - Verify the output is correct and complete against the success criteria.
 - A response that produces correct output but is missing the code, sources, or execution trace scores 0. Partial completion of the success criteria is not sufficient for demo tasks.
+</scoring_demo_tasks>
 
-RULES:
+<rules>
 - Output valid JSON only
 - Do not include markdown
 - Do not include explanation outside the JSON
 - Do not rename fields
 - Base ALL scores strictly on the rubric. Do not reward effort, only results.
 - Be consistent: the same quality of response should receive the same score regardless of which agent produced it
+</rules>
 
+<output_format>
 Return exactly this schema:
 {
   "agent_id": "string",
@@ -102,4 +107,5 @@ The verdict must:
 - State how well the agent fits the user's specific query
 - Highlight the strongest and weakest areas
 - Be calibrated for comparison. Note if this agent would rank highly or poorly against typical competing agents
+</output_format>
 """
